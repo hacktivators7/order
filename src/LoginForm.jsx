@@ -1,21 +1,23 @@
 // src/LoginForm.js
 import React, { useState } from 'react';
 import './LoginForm.css'; // Import the CSS file
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event) => {    
     event.preventDefault();
-    
+
     // Basic validation
     if (!email || !password) {
       setError('Both fields are required!');
       return;
     }
-    
+
     setError('');  // Clear error
 
     // Simulating an API call for login (you can replace it with your real API)
@@ -23,10 +25,11 @@ const LoginForm = () => {
 
     // After successful login, you can redirect the user or show a success message
     alert('Login successful!');
+    
   };
 
   return (
-    <div className="login-form-container">
+    <div className="login-form-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#f4f4f4' }}>
       <h2> Sales Rep. Login</h2>
       {error && <p className="error-message">{error}</p>}
       <form onSubmit={handleSubmit}>
@@ -50,7 +53,7 @@ const LoginForm = () => {
             placeholder="Enter your password"
           />
         </div>
-        <button type="submit" className="login-button">Login</button>
+        <button type="submit" onClick={() => navigate('/orders')} className="login-button">Login</button>
       </form>
     </div>
   );

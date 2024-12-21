@@ -1,13 +1,24 @@
-// src/App.js
 import React from 'react';
-import LoginForm from './LoginForm';  // Import the LoginForm component
+import './App.css'
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import LoginForm from './LoginForm';
+import Dashboard from './Dashboard';
+import OrderProcessing from './OrderProcessing';
+import CompletedOrders from './CompletedOrders';
 
-const App = () => {
+function App() {
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#f4f4f4' }}>
-      <LoginForm />  {/* Use the LoginForm component */}
-    </div>
+    <Router>
+      <div>
+        <Routes>
+          <Route path="/" element={<LoginForm />} />
+          <Route path='/dashboard' element={<Dashboard />} />
+          <Route path='/orders' element={<OrderProcessing />} />
+          <Route path="/completed-orders" element={<CompletedOrders />} />
+        </Routes>
+      </div>
+    </Router>
   );
-};
+}
 
 export default App;
