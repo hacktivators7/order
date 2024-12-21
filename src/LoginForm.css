@@ -3,7 +3,7 @@
 /* Container for the form */
 .login-form-container {
     width: 500px; /* Increased width */
-    height: 350px; /* Increased height */
+    height: 350px !important; /* Increased height */
     margin: 0 auto;
     padding: 30px; /* Increased padding for better spacing */
     border: 1px solid #ddd;
@@ -14,6 +14,7 @@
     flex-direction: column; /* Make the form items stack vertically */
     justify-content: center; /* Align the form vertically in the container */
     align-items: center; /* Align the form horizontally in the container */
+    margin-top: 90px;
   }
   
   /* Heading style */
