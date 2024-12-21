@@ -1,0 +1,109 @@
+/* src/LoginForm.css */
+
+/* Container for the form */
+.login-form-container {
+    width: 500px; /* Increased width */
+    height: 350px; /* Increased height */
+    margin: 0 auto;
+    padding: 30px; /* Increased padding for better spacing */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.9); /* Slight transparency for the background */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Increased box-shadow for a more noticeable effect */
+    display: flex;
+    flex-direction: column; /* Make the form items stack vertically */
+    justify-content: center; /* Align the form vertically in the container */
+    align-items: center; /* Align the form horizontally in the container */
+  }
+  
+  /* Heading style */
+  .login-form-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 28px; /* Slightly larger font size for the heading */
+    color: #333;
+  }
+  
+  /* Error message styling */
+  .error-message {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  /* Input fields container */
+  .input-group {
+    width: 100%;
+    margin-bottom: 20px; /* Increased bottom margin for better spacing */
+  }
+  
+  /* Label for input fields */
+  .input-group label {
+    display: block;
+    margin-bottom: 8px; /* Increased margin for better separation */
+    font-weight: 600;
+    font-size: 16px; /* Increased font size for better readability */
+    color: #333;
+  }
+  
+  /* Input fields styling */
+  .input-group input {
+    width: 100%;
+    padding: 12px; /* Increased padding for more space inside the input */
+    font-size: 16px; /* Slightly larger font size */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 5px; /* Add a little space between label and input */
+  }
+  
+  /* Button styling */
+  .login-button {
+    width: 100%;
+    padding: 15px; /* Increased padding for the button */
+    background-color: #0051ff;
+    color: white;
+    font-size: 18px; /* Larger font size for the button */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Smooth transition on hover */
+  }
+  
+  /* Button hover effect */
+  .login-button:hover {
+    background-color: #15b300fa;
+  }
+  
+  /* Background image */
+  .login-form-container {
+    background-image: url('https://img.freepik.com/premium-photo/toy-shopping-cart-with-boxes-blue-background_339191-217.jpg');
+     /* Ensure the image covers the entire container */
+    background-position: center;
+    background-attachment: fixed;  /* Optional: Makes the background fixed while scrolling */
+    background-repeat: no-repeat; /* Prevent repeating the background image */
+  }
+  
+  /* Responsive Design: When screen width is 768px or less */
+  @media (max-width: 768px) {
+    .login-form-container {
+      width: 90%;  /* Use 90% of the screen width on small screens */
+      height: 50%; /* Let the height adjust automatically */
+      padding: 20px; /* Adjust padding on small screens */
+    }
+  
+    .login-form-container h2 {
+      font-size: 24px; /* Smaller font size for headings on smaller screens */
+    }
+  
+    .input-group input {
+      font-size: 14px; /* Smaller font size for inputs on small screens */
+    }
+  
+    .login-button {
+      font-size: 16px; /* Smaller font size for the button */
+      padding: 12px; /* Adjust button padding */
+    }
+  }
+  
