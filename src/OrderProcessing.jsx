@@ -1,59 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Button, Chip, Grid } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Button, Chip, Grid, MenuItem, Select, FormControl, InputLabel, CircularProgress } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import * as XLSX from 'xlsx'; // Import the xlsx library
 import ExportIcon from '@mui/icons-material/Download'; // Import the export icon
 import { CheckCircle } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import * as XLSX from 'xlsx'; // Importing the xlsx library
 
-// Fake data generator
-const generateFakeOrder = () => {
-    const orderId = Math.floor(Math.random() * 10000);
-    const customerName = `Customer-${Math.floor(Math.random() * 100)}`;
-    const totalAmount = (Math.random() * 100).toFixed(2);
-    const statuses = ['Pending', 'Processing', 'Completed'];
-    const status = statuses[Math.floor(Math.random() * statuses.length)];
-
-    return {
-        id: orderId,
-        customer: customerName,
-        total: totalAmount,
-        status: status,
-        placedAt: new Date().toLocaleString(),
-    };
-};
-
-const OrderProcessing = () => {
-    const navigate = useNavigate()
-    const [orders, setOrders] = useState([]);
-    const [isProcessing, setIsProcessing] = useState(false);
+// OrderProcessing component where orders are received via props
+const OrderProcessing = (props) => {
+    const { orders } = props; // Accessing the orders passed as props
+    const navigate = useNavigate();
     const [currentRecords, setCurrentRecords] = useState(10); // To track how many records are displayed
-
-    // Simulate placing new orders every 5 seconds
-    useEffect(() => {
-        const interval = setInterval(() => {
-            const newOrder = generateFakeOrder();
-            setOrders((prevOrders) => [newOrder, ...prevOrders]);  // Push new order to the top
-        }, 5000);
-
-        // Cleanup interval on component unmount
-        return () => {
-            clearInterval(interval);
-        };
-    }, []);
-
-    // Simulate processing an order
-    const handleProcessOrder = (orderId) => {
-        setIsProcessing(true);
-        setTimeout(() => {
-            setOrders((prevOrders) =>
-                prevOrders.map((order) =>
-                    order.id === orderId ? { ...order, status: 'Processing' } : order
-                )
-            );
-            setIsProcessing(false);
-        }, 2000);
-    };
+    const [editedOrders, setEditedOrders] = useState(orders); // Track the updated orders
+    const [isLoading, setIsLoading] = useState(false); // Loading state to show loader
 
     // Function to return appropriate color for status
     const getStatusColor = (status) => {
@@ -77,7 +36,7 @@ const OrderProcessing = () => {
             Completed: 0,
         };
 
-        orders.forEach(order => {
+        editedOrders.forEach(order => {
             statusCount[order.status]++;
         });
 
@@ -93,9 +52,26 @@ const OrderProcessing = () => {
         setCurrentRecords((prev) => prev + 10); // Increase the number of records shown by 10
     };
 
+    // Handle urgency level change
+    const handleUrgencyChange = (orderID, newUrgencyLevel) => {
+        setIsLoading(true); // Set loading state to true
+
+        // Simulate a delay (e.g., API call or processing time)
+        setTimeout(() => {
+            const updatedOrders = editedOrders.map(order => {
+                if (order.orderID === orderID) {
+                    return { ...order, urgencyLevel: newUrgencyLevel }; // Update the urgency level
+                }
+                return order;
+            });
+            setEditedOrders(updatedOrders); // Update the state with the new orders
+            setIsLoading(false); // Set loading state to false after update
+        }, 1000); // Simulate delay of 1 second
+    };
+
     // Function to export data to Excel
     const exportToExcel = () => {
-        const worksheet = XLSX.utils.json_to_sheet(orders); // Convert orders data to sheet
+        const worksheet = XLSX.utils.json_to_sheet(editedOrders); // Convert orders data to sheet
         const workbook = XLSX.utils.book_new(); // Create a new workbook
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Orders'); // Append worksheet to workbook
         const excelFile = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' }); // Convert workbook to binary array
@@ -125,23 +101,17 @@ const OrderProcessing = () => {
                 right: 16,
                 zIndex: 1
             }}>
-                {/* <Tooltip title="Export to Excel" arrow> */}
-                    <Button
-                        variant="contained"
-                        title='Completed Orders'
-                        color="primary"
-                        onClick={() => navigate('/completed-orders')}
-                        sx={{ padding: 1, borderRadius: '50%', minWidth: 44, marginRight: 4 }}
-                    >
-
-                        <CheckCircle sx={{ fontSize: 25 }} />
-
-                    </Button>
-                {/* </Tooltip> */}
                 <Button
                     variant="contained"
                     color="primary"
-                    title='Export to excel'
+                    onClick={() => navigate('/completed-orders')}
+                    sx={{ padding: 1, borderRadius: '50%', minWidth: 44, marginRight: 4 }}
+                >
+                    <CheckCircle sx={{ fontSize: 25 }} />
+                </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
                     onClick={exportToExcel}
                     sx={{ padding: 1, borderRadius: '50%', minWidth: 44 }}
                 >
@@ -162,18 +132,20 @@ const OrderProcessing = () => {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell><strong>Order ID</strong></TableCell>
-                                        <TableCell><strong>Customer</strong></TableCell>
+                                        <TableCell><strong>Customer ID</strong></TableCell>
                                         <TableCell><strong>Status</strong></TableCell>
-                                        <TableCell><strong>Total</strong></TableCell>
-                                        <TableCell><strong>Placed At</strong></TableCell>
-                                        <TableCell><strong>Action</strong></TableCell>
+                                        <TableCell><strong>Order Value</strong></TableCell>
+                                        <TableCell><strong>Urgency Level</strong></TableCell>
+                                        <TableCell><strong>Priority Score</strong></TableCell>
+                                        <TableCell><strong>Order Date</strong></TableCell>
+                                        <TableCell><strong>Update Priority</strong></TableCell> {/* New Edit Column */}
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {orders.slice(0, currentRecords).map((order) => (
-                                        <TableRow key={order.id}>
-                                            <TableCell>{order.id}</TableCell>
-                                            <TableCell>{order.customer}</TableCell>
+                                    {editedOrders.slice(0, currentRecords).map((order) => (
+                                        <TableRow key={order.orderID}>
+                                            <TableCell>{order.orderID}</TableCell>
+                                            <TableCell>{order.customerID}</TableCell>
                                             <TableCell>
                                                 <Chip
                                                     label={order.status}
@@ -181,19 +153,26 @@ const OrderProcessing = () => {
                                                     size="small"
                                                 />
                                             </TableCell>
-                                            <TableCell>${order.total}</TableCell>
-                                            <TableCell>{order.placedAt}</TableCell>
+                                            <TableCell>${order.orderValue}</TableCell>
+                                            <TableCell>{order.urgencyLevel}</TableCell>
+                                            <TableCell>{order.priorityScore}</TableCell>
+                                            <TableCell>{order.orderDate}</TableCell>
+                                            
+                                            {/* Edit Dropdown */}
                                             <TableCell>
-                                                {order.status === 'Pending' && (
-                                                    <Button
-                                                        variant="contained"
-                                                        color="primary" // Primary color button
-                                                        onClick={() => handleProcessOrder(order.id)}
-                                                        disabled={isProcessing}
-                                                        sx={{ backgroundColor: '#1976d2' }} // Light blue button color
+                                                <FormControl fullWidth size="small">
+                                                    <InputLabel></InputLabel>
+                                                    <Select
+                                                        value={order.urgencyLevel}
+                                                        onChange={(e) => handleUrgencyChange(order.orderID, e.target.value)}
                                                     >
-                                                        {isProcessing ? 'Processing...' : 'Process Order'}
-                                                    </Button>
+                                                        {[...Array(10).keys()].map((num) => (
+                                                            <MenuItem key={num + 1} value={num + 1}>{num + 1}</MenuItem>
+                                                        ))}
+                                                    </Select>
+                                                </FormControl>
+                                                {isLoading && (
+                                                    <CircularProgress size={24} sx={{ position: 'absolute', top: '50%', left: '50%', marginLeft: '-12px', marginTop: '-12px' }} />
                                                 )}
                                             </TableCell>
                                         </TableRow>
@@ -203,7 +182,7 @@ const OrderProcessing = () => {
                         </TableContainer>
 
                         {/* Load More Button */}
-                        {orders.length > currentRecords && (
+                        {editedOrders.length > currentRecords && (
                             <Box sx={{ textAlign: 'center', marginTop: 2 }}>
                                 <Button variant="outlined" color="primary" onClick={loadMoreRecords}>
                                     Load More
